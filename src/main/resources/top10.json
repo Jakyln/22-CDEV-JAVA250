@@ -1,0 +1,29 @@
+
+[
+  {
+    "libelle": "PSP",
+    "prix":500
+  },
+  {
+    "libelle": "tv samsung",
+    "prix":699
+  },
+  ...
+]
+
+
+
+
+1) template
+http://amazon.com/top10
+application angular
+  template html
+  CSS
+  JS => requete http pour récupérer les données
+
+2) data
+http://amazon.com/api/topvente?max=10
+json
+
+
+template html + JSON => page html finale

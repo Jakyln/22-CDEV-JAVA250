@@ -30,8 +30,8 @@
 
     {{#factures}}
 
-        <h2>Facture numéro {{id}} de {{client.nom}} {{client.prenom}} <a href="/export/factures/{{id}}/pdf">pdf</a></h2>
-        {{>factures}}
+        <h2>Facture numéro {{id}} de {{client.nom}} {{client.prenom}} {{montant}} <a href="/export/factures/{{id}}/pdf">pdf</a></h2>
+
     {{/factures}}
 </body>
 </html>

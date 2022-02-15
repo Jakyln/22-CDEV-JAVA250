@@ -7,17 +7,12 @@ public class ArticleDto {
     private Long id;
     private String libelle;
     private double prix;
-    private int stock;
     private String imageUrl;
 
-    public ArticleDto() {
-    }
-
-    public ArticleDto(Long id, String libelle, double prix, int stock, String imageUrl) {
+    public ArticleDto(Long id, String libelle, double prix, String imageUrl) {
         this.id = id;
         this.libelle = libelle;
         this.prix = prix;
-        this.stock = stock;
         this.imageUrl = imageUrl;
     }
 
@@ -43,14 +38,6 @@ public class ArticleDto {
 
     public void setPrix(double prix) {
         this.prix = prix;
-    }
-
-    public int getStock() {
-        return stock;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
     }
 
     public String getImageUrl() {

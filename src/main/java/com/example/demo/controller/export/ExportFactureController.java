@@ -3,6 +3,7 @@ package com.example.demo.controller.export;
 import com.example.demo.service.export.ClientExportCVSService;
 import com.example.demo.service.export.ClientExportXLSXService;
 import com.example.demo.service.export.FactureExportPdfService;
+import com.example.demo.service.export.FactureExportXLSXService;
 import com.itextpdf.text.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +27,9 @@ public class ExportFactureController {
     @Autowired
     private FactureExportPdfService factureExportPdfService;
 
+    @Autowired
+    private FactureExportXLSXService factureExportXLSXService;
+
     // /**
     //  * Export des clients au format CSV.
     //  */
@@ -45,5 +49,13 @@ public class ExportFactureController {
         response.setHeader("Content-Disposition", "attachment; filename=\"export-facture-" + id + ".pdf\"");
         OutputStream outputStream = response.getOutputStream();
         factureExportPdfService.export(outputStream, id);
+    }
+
+    @GetMapping("xlsx")
+    public void exportCXLSX(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachment; filename=\"export-factures.xlsx\"");
+        OutputStream outputStream = response.getOutputStream();
+        factureExportXLSXService.export(outputStream);
     }
 }

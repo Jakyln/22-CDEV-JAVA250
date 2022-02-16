@@ -26,9 +26,9 @@ public class ExportArticleController {
      */
     @GetMapping("csv")
     public void exportCSV(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("text/csv");
+        response.setContentType("text/csv"); //ce sont ces 2 lignes qui disent que le navigateur devra telecharger un fichier csv, si on les enleves il essaie de l'afficher dans le browser
         response.setHeader("Content-Disposition", "attachment; filename=\"export-articles.csv\"");
-        PrintWriter writer = response.getWriter();
+        PrintWriter writer = response.getWriter(); // permet d'écrire directement dans la page que l'on veut afficher a l'utilisateur (la réponse)
         articleExportCVSService.export(writer);
     }
 

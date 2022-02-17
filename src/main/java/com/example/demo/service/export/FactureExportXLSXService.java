@@ -152,10 +152,14 @@ public class FactureExportXLSXService {
             cellHeaderClient7.setCellStyle(cellStyleHeader);
 
 
-            int iColFac = 1;
+            //int iColFac = 1;
             int iColNbFac = factuByCliMap.get(client).size();
 
-            for (Facture facture : factuByCliMap.get(client) ){
+            for (int i = 0 ,iColFac = 1; i < iColNbFac; i++,iColFac++) {
+                Facture facture = factuByCliMap.get(client).get(i);
+                rowHeaderClient4.createCell(iColFac).setCellValue(facture.getId());
+            }
+            /*for (Facture facture : factuByCliMap.get(client) ){
 
                 rowHeaderClient4.createCell(iColFac).setCellValue(facture.getId());
                 iColFac++;
@@ -237,20 +241,20 @@ public class FactureExportXLSXService {
                 XSSFSheet xssfSheet = (XSSFSheet) sheetFact;
                 xssfSheet.getCTWorksheet().getSheetViews().getSheetViewArray(0).getSelectionArray(0).setSqref(
                         java.util.Arrays.asList(cellRange));
-            }
+            }*/
 
-            int firstRowNum = sheetClient.getTopRow(); //ex : pour A ce sera 1
-            int lastRowNum = sheetClient.getLastRowNum() ;
-            String firstCell = "A1";
+            //int firstRowNum = sheetClient.getTopRow(); //ex : pour A1 c'est 1
+            int lastRowNumCli = sheetClient.getLastRowNum() ;
+            //String firstCell = "A1";
 
-            Row firstRowClient = sheetClient.getRow(firstRowNum);
-            Row lastRowClient = rowHeaderClient4;
+            //Row firstRowClient = sheetClient.getRow(firstRowNum);
+            Row lastRowClient = rowHeaderClient4; // la ligne du total
 
+            int lastCellNumCli = lastRowClient.getLastCellNum();
             //++lastRowNum;
-            String lastRowletter = getCharForNumber(lastRowNum);// on transforme le chiffre en lettre
+            String lastCellLetterCli = getCharForNumber(lastCellNumCli);// on transforme le chiffre en lettre
 
             //int firstCellNum = firstRowClient.getFirstCellNum(); // ex : 1
-            int lastCellNum = lastRowClient.getLastCellNum();
 
 
             //On adapte la taille des colonnes pour qu'il n'y ait pas de texte tronqué dans les feuilles client (à utiliser quand il n'y a pas beaucoup de lignes)
@@ -258,20 +262,20 @@ public class FactureExportXLSXService {
             for (int i = 0; i < nbRowsClient; i++) {
                 sheetClient.autoSizeColumn(i);
             }
-            sheetClient.setActiveCell(rowHeaderClient4.getCell(--lastCellNum).getAddress());
+            sheetClient.setActiveCell(lastRowClient.getCell(--lastCellNumCli).getAddress());
 
 
 
-            ++lastCellNum; // on incremente car ca part de 0 à la base
+            ++lastRowNumCli ; // on incremente car ca part de 0 à la base
 
-            String lastCell =  lastRowletter+lastCellNum;
-            String cellRange = "A1:"+lastCell;
+            String lastCellCli =  lastCellLetterCli+lastRowNumCli; //ex : A5
+            String cellRangeCli = "A1:"+lastCellCli;
 
             //code recupéré sur stackOverFlow pour selectionner plusieurs cellules
             //https://stackoverflow.com/questions/67270531/apache-poi-setactivecell-for-multiple-cells?rq=1
-            XSSFSheet xssfSheet = (XSSFSheet) sheetClient;
-            xssfSheet.getCTWorksheet().getSheetViews().getSheetViewArray(0).getSelectionArray(0).setSqref(
-                    java.util.Arrays.asList(cellRange));
+            XSSFSheet xssfSheetCli = (XSSFSheet) sheetClient;
+            xssfSheetCli.getCTWorksheet().getSheetViews().getSheetViewArray(0).getSelectionArray(0).setSqref(
+                    java.util.Arrays.asList(cellRangeCli));
         }
 
             //sheetClient.groupRow(0,++nbRowsClient);

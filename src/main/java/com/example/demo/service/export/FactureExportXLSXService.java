@@ -34,8 +34,8 @@ public class FactureExportXLSXService {
         List<Facture> allFactures = factureRepository.findAll();
         List<Facture> facturesByCli = new ArrayList<>();
         List<Client> allClients = clientRepository.findAll();
-        HashMap<Client, List<Facture>> factuByCliMap2 = new HashMap<Client, List<Facture> >();
-        Multimap<Client, List<Facture>> factuByCliMap = ArrayListMultimap.create();
+        HashMap<Client, List<Facture>> factuByCliMap = new HashMap<Client, List<Facture> >();
+        Multimap<Client, List<Facture>> factuByCliMap2 = ArrayListMultimap.create();
         Client c1 = new Client();
         Facture f1 = new Facture();
 
@@ -49,28 +49,46 @@ public class FactureExportXLSXService {
         Après avoir recupéré toutes les factures d'un client, on met le Client en tant que clé et la liste de factures en tant que valeur dans une HashMap
         commentaire a changer car j'ai inverser l'ordre
         */
-        for (Facture facture : allFactures) {
+        /*for (Facture facture : allFactures) {
             for ( Client client : allClients) {
                 if(facture.getClient().equals(client)){
                     facturesByCli.add(facture);
-                     System.out.println("Facture ajouté : " + facture.getId() + " du client :" + client.getPrenom());
+                     //System.out.println("Facture ajouté : " + facture.getId() + " du client :" + client.getPrenom());
                 }
                 factuByCliMap.put(client,facturesByCli);
+                //System.out.println("Facture ajouté2 : " + facturesByCli.get(0).getId() + " du client :" + client.getPrenom());
             }
-        }
+        }*/
+        //System.out.println("Valeur de retour : " + factuByCliMap);
+
 
 //On crée une hashmap pour associer les factures à un client
-        /*for ( Client client : allClients) {
+
+        /*for (int i = 0; i <allClients.size() ; i++) {
+            Client client = allClients.get(i);
+            for (int j = 0; j < allFactures.size(); j++) {
+                Facture facture = allFactures.get(j);
+                if(facture.getClient().equals(client)){
+                    facturesByCli.add(facture);
+                }
+            }
+            factuByCliMap.put(client,facturesByCli);
+            facturesByCli.clear();
+        }*/
+
+        for ( Client client : allClients) {
             for (Facture facture : allFactures ) {
                 if(facture.getClient().equals(client)){
                     facturesByCli.add(facture);
                     System.out.println("Facture ajouté : " + facture.getId() + " du client :" + client.getPrenom());
                 }
-                factuByCliMap.put(client,facturesByCli);
                 //System.out.println("nom du client " + client.getNom());
             }
-        }*/
-
+            List<Facture> newArray = new ArrayList<>(facturesByCli);
+            factuByCliMap.put(client,newArray);
+            facturesByCli.clear();
+        }
+        System.out.println("Valeur de retour : " + factuByCliMap);
         /*for (  Facture facture : allFactures) {
             for ( Client client : allClients) {
                 if(facture.getClient().equals(client)){
@@ -88,10 +106,9 @@ public class FactureExportXLSXService {
         cellStyleHeader.setFont(fontHeader);
         CellStyle cellStyleData = workbook.createCellStyle();
 
-        int iRow = 0;
         for (Client client : factuByCliMap.keySet()) {
 
-            System.out.println("Je suis dans la boucle clients et mon client, " + client.getPrenom() + " a " + factuByCliMap.get(client).size() + " facture, et sa 1ere fac est : " + factuByCliMap.get(client).toString());
+            //System.out.println("Je suis dans la boucle clients et mon client, " + client.getPrenom() + " a " + factuByCliMap.get(client).size() + " facture, et sa 1ere fac est : " + factuByCliMap.get(client).get(0).getId());
 
             Sheet sheetClient = workbook.createSheet(client.getNom() + " " + client.getPrenom());
 
@@ -123,21 +140,22 @@ public class FactureExportXLSXService {
             cellHeaderClient7.setCellStyle(cellStyleData);
 
 
-            //voir comment faire une variable temporaire pour ajouter autant de cell de facture qu'il y en a
             int iColFac = 1;
             int iColNbFac = factuByCliMap.get(client).size();
-            for (Facture facture : factuByCliMap.get(client) ){
-                Cell cellHeaderClient8 = rowHeaderClient4.createCell(1);
-                cellHeaderClient8.setCellValue(facture.getId());
-                Cell cellHeaderClient9 = rowHeaderClient4.createCell(2);
-                cellHeaderClient9.setCellValue(facture.getId());
-            }
 
-            /*for (Facture facture : factuByCliMap.get(client) ){
+            for (Facture facture : factuByCliMap.get(client) ){
+
+                rowHeaderClient4.createCell(iColFac).setCellValue(facture.getId());
+                iColFac++;
+                //metttre l'increment en dehors de la loop
+                //then you can write the excel using this command:
+
+
+
                 //System.out.println("facture num = " + facture.getId());
                 Sheet sheet = workbook.createSheet("Facture n°"+facture.getId());
 
-                Row rowHeader = sheet.createRow(iRow);
+                Row rowHeader = sheet.createRow(0);
                 Cell cellHeader1 = rowHeader.createCell(0);
                 cellHeader1.setCellValue("Désignation");
                 Cell cellHeader2= rowHeader.createCell(1);
@@ -145,9 +163,10 @@ public class FactureExportXLSXService {
                 Cell cellHeader3 = rowHeader.createCell(2);
                 cellHeader3.setCellValue("Prix Unitaire");
 
+                int iRow = 0;
                 for (LigneFacture ligneFacture : facture.getLigneFactures() ) {
                     Article article = ligneFacture.getArticle();
-                    Row row = sheet.createRow(iRow++);
+                    Row row = sheet.createRow(++iRow);
                     Cell cell0 = row.createCell(0);
                     cell0.setCellValue(article.getLibelle());
                     Cell cell1 = row.createCell(1);
@@ -156,14 +175,13 @@ public class FactureExportXLSXService {
                     cell2.setCellValue(article.getPrix());
 
                 }
-                Row row = sheet.createRow(iRow++);
+                Row row = sheet.createRow(++iRow);
                 Cell cell = row.createCell(1);
                 cell.setCellValue("Total");
                 Cell cellTotal = row.createCell(2);
                 cellTotal.setCellValue("Todo: mettre le total");
 
-
-            }*/
+            }
         }
 
 
@@ -239,3 +257,5 @@ public class FactureExportXLSXService {
 
 
 
+
+// toutes les clé clients ont acces a toutes les factures

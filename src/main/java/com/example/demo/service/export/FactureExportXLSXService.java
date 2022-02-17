@@ -17,9 +17,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class FactureExportXLSXService {
@@ -88,6 +86,7 @@ public class FactureExportXLSXService {
             factuByCliMap.put(client,newArray);
             facturesByCli.clear();
         }
+
         System.out.println("Valeur de retour : " + factuByCliMap);
         /*for (  Facture facture : allFactures) {
             for ( Client client : allClients) {
@@ -105,6 +104,16 @@ public class FactureExportXLSXService {
         fontHeader.setBold(true);
         cellStyleHeader.setFont(fontHeader);
         CellStyle cellStyleData = workbook.createCellStyle();
+
+
+        //On enlève le client qui n'a aucune factures de la collection en utilisant un iterator
+            for(Iterator< Map.Entry <Client, List<Facture>> > it = factuByCliMap.entrySet().iterator(); it.hasNext(); ) {
+                Map.Entry<Client, List<Facture>> clientEntry = it.next();
+                if(clientEntry.getValue().size() == 0) {
+                    System.out.println("On enlève le client de nom : " + clientEntry.getKey().getNom());
+                    it.remove();
+                }
+        }
 
         for (Client client : factuByCliMap.keySet()) {
 

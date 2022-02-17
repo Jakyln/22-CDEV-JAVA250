@@ -152,14 +152,15 @@ public class FactureExportXLSXService {
             cellHeaderClient7.setCellStyle(cellStyleHeader);
 
 
-            //int iColFac = 1;
             int iColNbFac = factuByCliMap.get(client).size();
 
-            for (int i = 0 ,iColFac = 1; i < iColNbFac; i++,iColFac++) {
+            for (int i = 0 ,iColFacTemp = 1; i < iColNbFac; i++,iColFacTemp++) {
                 Facture facture = factuByCliMap.get(client).get(i);
-                rowHeaderClient4.createCell(iColFac).setCellValue(facture.getId());
+                rowHeaderClient4.createCell(iColFacTemp).setCellValue(facture.getId());
             }
-            /*for (Facture facture : factuByCliMap.get(client) ){
+
+            int iColFac = 1;
+            for (Facture facture : factuByCliMap.get(client) ){
 
                 rowHeaderClient4.createCell(iColFac).setCellValue(facture.getId());
                 iColFac++;
@@ -225,14 +226,13 @@ public class FactureExportXLSXService {
                 Row firstRowFact = sheetFact.getRow(firstRowNum);
                 Row lastRowFact = sheetFact.getRow(lastRowNum);
 
-                //++lastRowNum;
-                String lastRowletter = getCharForNumber(lastRowNum);// on transforme le chiffre en lettre
+                int lastCellNumFac = lastRowFact.getLastCellNum();
+                String lastCellLetterFac = getCharForNumber(lastCellNumFac);// on transforme le chiffre en lettre
 
                 //int firstCellNum = firstRowClient.getFirstCellNum(); // ex : 1
-                int lastCellNum = lastRowFact.getLastCellNum();
-                ++lastCellNum; // on incremente car ca part de 0 à la base
+                ++lastRowNum; // on incremente car ca part de 0 à la base
 
-                String lastCell =  lastRowletter+lastCellNum;
+                String lastCell =  lastCellLetterFac+lastRowNum;
                 String cellRange = "A1:"+lastCell;
 
 
@@ -241,7 +241,7 @@ public class FactureExportXLSXService {
                 XSSFSheet xssfSheet = (XSSFSheet) sheetFact;
                 xssfSheet.getCTWorksheet().getSheetViews().getSheetViewArray(0).getSelectionArray(0).setSqref(
                         java.util.Arrays.asList(cellRange));
-            }*/
+            }
 
             //int firstRowNum = sheetClient.getTopRow(); //ex : pour A1 c'est 1
             int lastRowNumCli = sheetClient.getLastRowNum() ;
